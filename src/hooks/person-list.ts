@@ -74,6 +74,32 @@ const fetcher: PersonListFetcher = async ([, request]) => {
 	}
 };
 
+/**
+ * Fetches a paginated list of persons with support for infinite scroll or cursor-based loading.
+ *
+ * Use this hook when you need to fetch a paginated list of people, either for server-side
+ * pagination with manual page loading or for infinite scroll. Pass null for options to suspend
+ * all fetches. The hook provides multiple pages of data that you can combine via `.data`.
+ *
+ * @param options - Filter and pagination options (name, age, pageSize). Pass null to suspend fetching.
+ * @param config - Optional SWR configuration. Set `parallel: true` to fetch all pages concurrently
+ *                 instead of waiting for each to complete.
+ * @returns SWR Infinite hook result with paginated data, error, and utilities for manual page loading
+ *
+ * @example
+ * // Fetch persons with filters, one page at a time
+ * const { data, setSize } = usePersonList({ name: 'Gabriel', pageSize: 10 });
+ *
+ * @example
+ * // Implement infinite scroll by incrementing page count
+ * const { data, size, setSize } = usePersonList({ pageSize: 20 });
+ * return (
+ *   <>
+ *     {data?.map(page => page.persons.map(person => ...))}
+ *     <button onClick={() => setSize(size + 1)}>Load More</button>
+ *   </>
+ * );
+ */
 export const usePersonList = (
 	options?: PersonListOptions | null,
 	config?: PersonListConfiguration

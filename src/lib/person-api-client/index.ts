@@ -7,48 +7,38 @@ export type Pagination = {
 	hasPrevious: boolean;
 };
 
-export type Page <T, K extends string> = Record<K, T[]> & {
+export type Page<T, K extends string> = Record<K, T[]> & {
 	pagination: Pagination;
 };
 
-export type PageRequest = {
-	page: number;
-	pageSize: number;
-};
+export type PageRequest = { page: number; pageSize: number };
 
-export type Person = {
-	id: string;
-	name: string;
-	age: number;
-};
+export type Person = { id: string; name: string; age: number };
 
 export type PersonCreateRequest = Omit<Person, 'id'>;
 
 export type PersonCreateResponse = Person;
 
-export type PersonRetrieveRequest = {
-	id: Person['id'];
-};
+export type PersonRetrieveRequest = { id: Person['id'] };
 
 export type PersonRetrieveResponse = Person | null;
 
-export type PersonUpdateRequest = Pick<Person, 'id'> & Partial<Omit<Person, 'id'>>;
+export type PersonUpdateRequest = Pick<Person, 'id'> &
+	Partial<Omit<Person, 'id'>>;
 
 export type PersonUpdateResponse = Person;
 
 export type PersonListRequest = PageRequest & Partial<Omit<Person, 'id'>>;
 
-export type PersonListResponse = Page<Person, 'persons'>
+export type PersonListResponse = Page<Person, 'persons'>;
 
 const store: Person[] = [
-	{
-		id: crypto.randomUUID(),
-		name: 'Gabriel Benson',
-		age: 36
-	}
+	{ id: crypto.randomUUID(), name: 'Gabriel Benson', age: 36 }
 ];
 
-export const create = async (request: PersonCreateRequest): Promise<PersonCreateResponse> => {
+export const create = async (
+	request: PersonCreateRequest
+): Promise<PersonCreateResponse> => {
 	try {
 		const id = crypto.randomUUID();
 
@@ -62,27 +52,32 @@ export const create = async (request: PersonCreateRequest): Promise<PersonCreate
 	} catch (cause: unknown) {
 		const requestStr = JSON.stringify(request, null, 2);
 
-		throw new Error(`Failed to create Person with request: ${requestStr}`, { cause });
+		throw new Error(`Failed to create Person with request: ${requestStr}`, {
+			cause
+		});
 	}
 };
 
-export const retrieve = async ({ id }: PersonRetrieveRequest): Promise<PersonRetrieveResponse> => {
+export const retrieve = async ({
+	id
+}: PersonRetrieveRequest): Promise<PersonRetrieveResponse> => {
 	try {
-		const match = store
-			.find(person => person.id === id) ?? null;
+		const match = store.find(person => person.id === id) ?? null;
 
-		if (match) return structuredClone(match);
+		if (!match) throw new Error('Person not found');
 
-		return null;
+		return structuredClone(match);
 	} catch (cause: unknown) {
 		throw new Error(`Failed to retrieve Person with id "${id}"`, { cause });
 	}
 };
 
-export const update = async ({ id, ...updates }: PersonUpdateRequest): Promise<PersonUpdateResponse> => {
+export const update = async ({
+	id,
+	...updates
+}: PersonUpdateRequest): Promise<PersonUpdateResponse> => {
 	try {
-		const matchIndex = store
-			.findIndex(person => person.id === id);
+		const matchIndex = store.findIndex(person => person.id === id);
 
 		const match = store.at(matchIndex);
 
@@ -100,27 +95,36 @@ export const update = async ({ id, ...updates }: PersonUpdateRequest): Promise<P
 	} catch (cause: unknown) {
 		const updatesStr = JSON.stringify(updates, null, 2);
 
-		throw new Error(`Failed to update Person with id "${id}" and updates: ${updatesStr}`, { cause });
+		throw new Error(
+			`Failed to update Person with id "${id}" and updates: ${updatesStr}`,
+			{ cause }
+		);
 	}
 };
 
-export const list = async (request: PersonListRequest): Promise<PersonListResponse> => {
+export const list = async (
+	request: PersonListRequest
+): Promise<PersonListResponse> => {
 	try {
 		const allPages = store
 			.filter(person => {
 				if (request.name && !person.name.includes(request.name)) return false;
-				if (typeof request.age === 'number' && person.age !== request.age) return false;
+				if (typeof request.age === 'number' && person.age !== request.age)
+					return false;
 
 				return true;
 			})
-			.reduce<Person[][]>((pages, person) => {
-				const page = pages.at(-1);
+			.reduce<Person[][]>(
+				(pages, person) => {
+					const page = pages.at(-1);
 
-				if (!page || pages.length === request.pageSize) pages.push([person]);
-				else page.push(person);
+					if (!page || page.length === request.pageSize) pages.push([person]);
+					else page.push(person);
 
-				return pages;
-			}, [[]])
+					return pages;
+				},
+				[[]]
+			);
 
 		const { [request.page]: persons } = allPages;
 
@@ -136,6 +140,8 @@ export const list = async (request: PersonListRequest): Promise<PersonListRespon
 		return { persons, pagination };
 	} catch (cause: unknown) {
 		const requestStr = JSON.stringify(request, null, 2);
-		throw new Error(`Failed to list Persons with request: ${requestStr}`, { cause });
+		throw new Error(`Failed to list Persons with request: ${requestStr}`, {
+			cause
+		});
 	}
 };

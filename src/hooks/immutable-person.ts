@@ -50,6 +50,25 @@ const fetcher: ImmutablePersonFetcher = async ([, id]) => {
 	}
 };
 
+/**
+ * Fetches a single person by ID without automatic revalidation.
+ *
+ * Use this hook when the person ID is stable and won't change, or when you're fetching
+ * immutable data that doesn't need to be revalidated. This is more efficient than `usePerson`
+ * as it disables background revalidation. If the ID is null or undefined, the fetch is suspended.
+ *
+ * @param id - The person ID to fetch. Pass null or undefined to suspend the fetch.
+ * @param config - Optional SWR configuration for customizing behavior
+ * @returns SWR hook result with data and error (no automatic refetching)
+ *
+ * @example
+ * // Fetch a person that won't change during the component's lifetime
+ * const { data: person } = useImmutablePerson(constantPersonId);
+ *
+ * @example
+ * // Prevent unnecessary revalidation in performance-critical scenarios
+ * const { data: person } = useImmutablePerson(userId, { revalidateOnFocus: false });
+ */
 export const useImmutablePerson = (
 	id?: Person['id'] | null,
 	config?: ImmutablePersonConfiguration
