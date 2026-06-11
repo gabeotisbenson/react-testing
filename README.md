@@ -2,6 +2,10 @@
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
+## Toolchain
+
+This project uses [bun](https://bun.sh) as its package manager **and** runtime (`bun install`, `bun run dev`). npm and node are intentionally unused — scripts force the bun runtime via `--bun`, and a `preinstall` guard blocks other package managers.
+
 Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
