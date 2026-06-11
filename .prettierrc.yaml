@@ -1,0 +1,10 @@
+useTabs: true
+semi: true
+singleQuote: true
+quoteProps: 'as-needed'
+jsxSingleQuote: true
+trailingComma: 'none'
+objectWrap: 'collapse'
+arrowParens: 'avoid'
+proseWrap: 'always'
+vueIndentScriptAndStyle: true
