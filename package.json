@@ -5,11 +5,11 @@
 	"type": "module",
 	"scripts": {
 		"check-updates": "ncu",
-		"dev": "vite",
-		"build": "tsc -b && vite build",
-		"lint": "eslint .",
-		"preview": "vite preview",
-		"type-check": "tsc --noEmit"
+		"dev": "bun --bun vite",
+		"build": "bun --bun tsc -b && bun --bun vite build",
+		"lint": "bun --bun eslint .",
+		"preview": "bun --bun vite preview",
+		"type-check": "bun --bun tsc --noEmit"
 	},
 	"dependencies": {
 		"react": "^19.2.7",
