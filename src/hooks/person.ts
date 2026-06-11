@@ -4,10 +4,7 @@ import {
 	type PersonRetrieveRequest,
 	retrieve
 } from '../lib/person-api-client';
-import useSWR, {
-	type Fetcher,
-	type SWRConfiguration
-} from 'swr';
+import useSWR, { type Fetcher, type SWRConfiguration } from 'swr';
 
 export type PersonKey = ['persons', PersonRetrieveRequest] | null;
 
@@ -16,7 +13,7 @@ export type PersonFetcher = Fetcher<Person, PersonKey>;
 export class PersonError extends Error {
 	readonly request: PersonRetrieveRequest;
 
-	constructor (
+	constructor(
 		request: PersonRetrieveRequest,
 		options: ErrorOptions & Required<Pick<ErrorOptions, 'cause'>>
 	) {

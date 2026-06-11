@@ -1,13 +1,7 @@
 import { exists } from '../utils/exists';
 import useSWRImmutable from 'swr/immutable';
-import type {
-	Fetcher,
-	SWRConfiguration
-} from 'swr';
-import {
-	type Person,
-	retrieve
-} from '../lib/person-api-client';
+import type { Fetcher, SWRConfiguration } from 'swr';
+import { type Person, retrieve } from '../lib/person-api-client';
 
 export type ImmutablePersonKey = ['persons', Person['id']] | null;
 
@@ -16,7 +10,7 @@ export type ImmutablePersonFetcher = Fetcher<Person, ImmutablePersonKey>;
 export class ImmutablePersonError extends Error {
 	readonly personId: Person['id'];
 
-	constructor (
+	constructor(
 		personId: Person['id'],
 		options: ErrorOptions & Required<Pick<ErrorOptions, 'cause'>>
 	) {

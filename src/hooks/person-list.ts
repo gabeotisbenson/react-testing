@@ -27,16 +27,13 @@ type PersonListFetcher = SWRInfiniteFetcher<
 class PersonListError extends Error {
 	readonly request: PersonListRequest;
 
-	constructor (
+	constructor(
 		request: PersonListRequest,
 		options: ErrorOptions & Required<Pick<ErrorOptions, 'cause'>>
 	) {
 		const requestStr = JSON.stringify(request, null, 2);
 
-		super(
-			`Failed to fetch Person list with request: ${requestStr}`,
-			options
-		);
+		super(`Failed to fetch Person list with request: ${requestStr}`, options);
 
 		this.request = request;
 	}
@@ -47,22 +44,19 @@ type PersonListConfiguration = SWRInfiniteConfiguration<
 	PersonListError
 >;
 
-const createKeyLoader = (
-	options?: PersonListOptions | null,
-	parallel = false
-): PersonListKeyLoader => (index, previous) => {
-	if (!exists(options)) return null;
-	if (!parallel && exists(previous) && !previous.pagination.hasNext) return null;
+const createKeyLoader =
+	(options?: PersonListOptions | null, parallel = false): PersonListKeyLoader =>
+	(index, previous) => {
+		if (!exists(options)) return null;
+		if (!parallel && exists(previous) && !previous.pagination.hasNext)
+			return null;
 
-	const page = index + 1;
+		const page = index + 1;
 
-	const request: PersonListRequest = {
-		...options,
-		page
+		const request: PersonListRequest = { ...options, page };
+
+		return ['persons', request];
 	};
-
-	return ['persons', request];
-};
 
 const fetcher: PersonListFetcher = async ([, request]) => {
 	try {
